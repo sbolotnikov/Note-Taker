@@ -4,7 +4,7 @@ var express = require("express");
 var path = require("path");
 const fs = require("fs");
 const public_DIR = path.resolve(__dirname, "public");
-const db = require("./db/db.json");
+var db = require("./db/db.json");
 // Sets up the Express App
 // =============================================================
 var app = express();
@@ -13,42 +13,19 @@ var PORT = 3030;
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Star Wars Characters (DATA)
-// =============================================================
-var tables = [
-    {
-        name: "Yoda",
-        phone: 65432,
-        email: "e@k",
-        id: 2000
-    },
-];
-    var waitlist = [];
-    //   {
-    //     name: "Darth Maul",
-    //     phone: 876543,
-    //     email: "f@l",
-    //     id: 1200
-    //   },
-    //   {
-    //     name: "Obi Wan Kenobi",
-    //     phone: 65435,
-    //     email: "er@hj",
-    //     id: 1350
-    //   }
-
+app.use("/", express.static( public_DIR));
 
 // Routes
 // =============================================================
 
 // Basic route that sends the user first to the AJAX Page
-app.get("/notes", function (req, res) {
-    res.sendFile(path.join(public_DIR, "notes.html"));
-});
 app.get("/", function (req, res) {
     res.sendFile(path.join(public_DIR, "index.html"));
 });
+app.get("/notes", function (req, res) {
+    res.sendFile(path.join(public_DIR, "notes.html"));
+});
+
 
 
 
@@ -60,9 +37,13 @@ app.post("/api/notes", function (req, res) {
     // req.body hosts is equal to the JSON post sent from the user
     // This works because of our body parsing middleware
     // var newTable = req.body;
-
-    console.log(req.body);
-    db.push(req.body);
+    let objaddID={
+       title: req.body.title,
+       text: req.body.text,
+       id: db.length
+    };
+    console.log(objaddID);
+    db.push(objaddID);
     res.json(true)
     
 
@@ -70,10 +51,28 @@ app.post("/api/notes", function (req, res) {
 
     // res.json(newTable);
 });
+app.delete('/api/notes/:id', function (req, res){
+    console.log(req.params.id)
+ db.splice(req.params.id,1);
+ db.forEach(note=> {
+     note.id=db.indexOf(note)
+ })
+    console.log(db);
+  res.json("true");
 
+});  
+app.put('/api/notes/:id', function (req, res){
+    console.log(req.body, req.params.id); 
+    db[req.params.id].title=req.body.title;
+    db[req.params.id].text=req.body.text;
+    res.json("true");
+
+
+
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 app.get("*", function (req, res) {
-    res.send('404 file not found')
-    // res.sendFile(path.join(public_DIR, "404.html"));
+    // res.send(404)
+    res.sendFile(path.join(public_DIR, "404.html"));
 });
 
 // Displays a single character, or returns false
@@ -96,3 +95,10 @@ app.get("*", function (req, res) {
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
 });
+function getNextID(){
+  let id=db.length;
+  while (db.indexOf(id)>=0){
+  id+=1;
+  }
+  return id;
+}
