@@ -1,72 +1,107 @@
-const server = require("../server.js");
 
-test("Can server get response", () => {
-  const e=$.ajax({
-    url: "/api/notes",
-    method: "GET",
-  })
-  
-  expect(typeof(e)).toBe("object");
-});
-describe("server", () => {
-  it("should write note", () => {
-    const str = $.ajax({
-      url: "/api/notes",
-      data: {"title":"Title TEST","text":"TEST text"},
-      method: "POST",
-    });
+// var expect  = require('chai').expect;
+var request = require('request');
+var db = require("../db/db.json");
+const app = require("../server.js");
+const chai = require("chai");
+const chaiHttp = require("chai-http");
 
-    expect(str).toEqual(true);
+const { expect } = chai;
+chai.use(chaiHttp);
+describe("Server test:", () => {
+
+  it(" POST testing", done => {
+    chai
+      .request('http://localhost:3030').post("/api/notes").send({ title: "test1", text: "test1", id: 0 })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.equals(true);
+        done();
+      });
+  });
+  it(" DELETE testing", done => {
+    chai
+      .request('http://localhost:3030').delete("/api/notes/0")
+      .end((err, res) => {
+        console.log(db)
+        expect(res).to.have.status(200);
+        expect(res.body).to.equals('true');
+        done();
+      });
   });
 
-  it("should get notes Json", () => {
-    const result = $.ajax({
-      url: "/api/notes",
-      method: "GET",
-    });
-    
-
-    expect(typeof result).toEqual('object');
+  it(" PUT testing", done => {
+    chai
+      .request('http://localhost:3030').put("/api/notes/0")
+      .end((err, res) => {
+        console.log(db)
+        expect(res).to.have.status(200);
+        expect(res.body).to.equals('true');
+        done();
+      });
   });
 });
-// test("Can set name via constructor arguments", () => {
-//   const name = "Alice";
-//   const e = new Employee(name);
-//   expect(e.name).toBe(name);
+
+it('Main page test', function (done) {
+  request('http://localhost:3030', function (error, response, body) {
+    expect(response.statusCode).to.equal(200);
+    expect(response.headers["content-type"]).to.equals("text/html; charset=UTF-8");
+    expect(response.statusMessage).to.equals("OK");
+    done();
+  });
+});
+
+it('Edit note page test ', function (done) {
+  request('http://localhost:3030/notes', function (error, response, body) {
+    expect(response.statusCode).to.equal(200);
+    expect(response.headers["content-type"]).to.equals("text/html; charset=UTF-8");
+    expect(response.statusMessage).to.equals("OK");
+    done();
+  });
+});
+it('API route test', function (done) {
+  request('http://localhost:3030/api/notes', function (error, response, body) {
+    expect(response.statusCode).to.equal(200);
+    expect(body).to.equals('[{"title":"test1","text":"test1","id":0}]');
+    done();
+  });
+});
+
+
+// function test(){
+// db=[];
+// db.push({title: "test1",text: "test1",id: 0});
+// }
+// test();
+// console.log(db)
+
+
+
+//   it("server starts edit notes page ", done => {
+//     chai
+//       .request(app)
+//       .get("/api/notes")
+//       .end((err, res) => {
+//         expect(res).to.have.status(200);
+//         expect(res.body.status).to.equals("success");
+//         expect(res.body.message).to.equals("Edit notes");
+//         done();
+//       });
+// it("adds 2 numbers", done => {
+//   chai
+//     .request(app)
+//     .post("/add")
+//     .send({ num1: 5, num2: 5 })
+//     .end((err, res) => {
+//       expect(res).to.have.status(200);
+//       expect(res.body.status).to.equals("success");
+//       expect(res.body.result).to.equals(10);
+//       done();
+//     });
 // });
 
-// test("Can set id via constructor argument", () => {
-//   const testValue = 100;
-//   const e = new Employee("Foo", testValue);
-//   expect(e.id).toBe(testValue);
+
+
 // });
 
-// test("Can set email via constructor argument", () => {
-//   const testValue = "test@test.com";
-//   const e = new Employee("Foo", 1, testValue);
-//   expect(e.email).toBe(testValue);
-// });
 
-// test("Can get name via getName()", () => {
-//   const testValue = "Alice";
-//   const e = new Employee(testValue);
-//   expect(e.getName()).toBe(testValue);
-// });
-
-// test("Can get id via getId()", () => {
-//   const testValue = 100;
-//   const e = new Employee("Foo", testValue);
-//   expect(e.getId()).toBe(testValue);
-// });
-
-// test("Can get email via getEmail()", () => {
-//   const testValue = "test@test.com";
-//   const e = new Employee("Foo", 1, testValue);
-//   expect(e.getEmail()).toBe(testValue);
-// });
-
-// test("getRole() should return \"Employee\"", () => {
-//   const testValue = "Employee";
-//   const e = new Employee("Alice", 1, "test@test.com");
-//   expect(e.getRole()).toBe(testValue);
-// });
