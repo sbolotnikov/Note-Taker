@@ -8,7 +8,7 @@ const public_DIR = path.resolve(__dirname, "public");
 // Sets up the Express App
 // =============================================================
 var app = express();
-var PORT = 3030;
+var PORT = 8080;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +29,7 @@ require("./routes/htmlRoutes")(app);
 module.exports = {
   app: app,
   start: function(){
-    app.listen(process.env.PORT || 3000, function(){
+    app.listen(process.env.PORT || 3030, function(){
       console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
     });
   }
