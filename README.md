@@ -42,4 +42,4 @@ All tests are in `test` folder
 ## Review 
   * Here is this repo link: https://github.com/sbolotnikov/Note-Taker
  
-  * Link: [Note Taker App](https://salty-falls-54798.herokuapp.com/notes)
+  * Link: [Note Taker App](https://note-taker-xgt8.onrender.com/)
