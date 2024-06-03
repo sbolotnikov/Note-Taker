@@ -9,7 +9,7 @@ Note taker App is an application that can be used to write, save, edit and delet
 * [Questions](#questions)
 * [Review](#review)
 ## Installation 
-You can clone or fork the repo. Or just visit the deployed site:  https://salty-falls-54798.herokuapp.com/notes.
+You can clone or fork the repo. Or just visit the deployed site:  https://note-taker-xgt8.onrender.com/.
 ## Usage 
 Visit the deployed site. Notes are available for all to see, so please keep it civil.
 
